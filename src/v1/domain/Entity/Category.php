@@ -5,36 +5,28 @@ namespace Domain\Entity;
 
 class Category
 {
-    private $id;
-    private $name;
-    private $lft;
-    private $rgt;
-    private $level;
+    /**
+     * @property int $id
+     */
+    public $id;
 
+    /**
+     * @property string $name
+     */
+    public $name;
 
-    public function getId()
-    {
-        return $this->id;
-    }
+    /**
+     * @property int $lft
+     */
+    public $lft;
 
-    public function getName()
-    {
-        return $this->name;
-    }
+    /**
+     * @property int $rgt
+     */
+    public $rgt;
 
-    public function getLft()
-    {
-        return $this->lft;
-    }
-
-    public function getRgt()
-    {
-        return $this->rgt;
-    }
-
-    public function getLevel()
-    {
-        return $this->level;
-    }
-
+    /**
+     * @property int $level
+     */
+    public $level;
 }

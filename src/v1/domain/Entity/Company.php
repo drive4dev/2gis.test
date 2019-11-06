@@ -11,28 +11,23 @@ namespace Domain\Entity;
 
 class Company
 {
-    private $id;
-    private $name;
-    private $building_id;
-    private $phones;
+    /**
+     * @property int $id
+     */
+    public $id;
 
-    public function getId()
-    {
-        return $this->id;
-    }
+    /**
+     * @property string $name
+     */
+    public $name;
 
-    public function getName()
-    {
-        return $this->name;
-    }
+    /**
+     * @property int $building_id
+     */
+    public $building_id;
 
-    public function getBuildingId()
-    {
-        return $this->building_id;
-    }
-
-    public function getPhones()
-    {
-        return $this->building_id;
-    }
+    /**
+     * @property string $phones
+     */
+    public $phones;
 }

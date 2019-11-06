@@ -6,43 +6,22 @@ namespace Domain\Entity;
 class Building
 {
     /**
-     * @var int
+     * @property int $id
      */
-    private $id;
+    public $id;
 
     /**
-     * @var string
+     * @property string $address
      */
-    private $address;
+    public $address;
 
     /**
-     * @var float
+     * @property float $latitude
      */
-    private $latitude;
+    public $latitude;
 
     /**
-     * @var float
+     * @property float $longitude
      */
-    private $longitude;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    public function getLatitude()
-    {
-        return $this->latitude;
-
-    }
-
-    public function getLongitude()
-    {
-        return $this->longitude;
-    }
+    public $longitude;
 }
