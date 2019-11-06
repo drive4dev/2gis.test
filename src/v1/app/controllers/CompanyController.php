@@ -8,20 +8,33 @@
 
 namespace App\Controllers;
 
+use Domain\Repository\CompanyRepository;
 use Domain\Service\CompanyService;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class CompanyController extends BaseController
 {
-    private function getCompanyService(): CompanyService
+    private $companyService;
+    private $companyRepository;
+
+    public function __construct(CompanyRepository $companyRepository, CompanyService $companyService)
     {
-        return $this->container->get('company_service');
+        $this->companyRepository = $companyRepository;
+        $this->companyService = $companyService;
     }
 
-    public function get(){
+    public function getOne(Request $request, Response $response, array $args)
+    {
+        $this->setParams($request, $response, $args);
 
+        $company = $this->companyRepository->getById($this->args['id']);
 
+        return $this->jsonResponse(
+            'success',
+            $company,
+            200
+        );
     }
 
     public function radius(Request $request, Response $response, array $args)
@@ -30,7 +43,7 @@ class CompanyController extends BaseController
 
         return $this->jsonResponse(
             'success',
-            $this->getCompanyService()->getWithinRadius($this->request->getQueryParams()),
+            $this->companyService->getWithinRadius($this->request->getQueryParams()),
             200);
     }
 

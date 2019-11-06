@@ -14,4 +14,10 @@ $app->group('/api/v1', function (App $app) {
     // http://2gis.test/api/v1/company/radius?lat=85&lon=-25&rad=7000
     $app->get('/company/radius', CompanyController::class . ':radius');
 
+    $app->get('/building', BuildingController::class . ':index');
+
+    $app->get('/company/{id:[0-9]+}', CompanyController::class . ':getOne');
+
+    //http://2gis.test/api/v1/category?id=7
+    $app->get('/category', CategoryController::class . ':index');
 });

@@ -18,3 +18,8 @@ $container['db'] = function (ContainerInterface $c): PDO {
 
     return $pdo;
 };
+
+
+require __DIR__ . '/Repositories.php';
+require __DIR__ . '/Services.php';
+require __DIR__ . '/Controllers.php';

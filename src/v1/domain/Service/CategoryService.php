@@ -2,33 +2,50 @@
 /**
  * Created by PhpStorm.
  * User: maggotik
- * Date: 11/4/19
- * Time: 7:29 PM
+ * Date: 11/6/19
+ * Time: 11:36 PM
  */
 
 namespace Domain\Service;
 
 
-use Domain\Exception\NotFoundException;
-use Domain\Repository\CompanyRepository;
-
 class CategoryService
 {
-    private $companyRepository;
-
-    public function __construct(CompanyRepository $companyRepository)
+    public function buildTrees(array $categories)
     {
-        $this->companyRepository = $companyRepository;
-    }
+        $trees = array();
 
-    public function getAttachedCompanies(int $id)
-    {
-        $companies = $this->companyRepository->getByCategoryId($id);
+        if (count($categories) > 0) {
+            // Node Stack. Used to help building the hierarchy
+            $stack = array();
 
-        if (empty($companies)) {
-            throw new NotFoundException('Companies not found', 404);
+            foreach ($categories as $category) {
+                $item = $category;
+                $item->children = array();
+
+                // Number of stack items
+                $l = count($stack);
+
+                // Check if we're dealing with different levels
+                while ($l > 0 && $stack[$l - 1]->level >= $item->level) {
+                    array_pop($stack);
+                    $l--;
+                }
+
+                // Stack is empty (we are inspecting the root)
+                if ($l == 0) {
+                    // Assigning the root node
+                    $i = count($trees);
+                    $trees[$i] = $item;
+                    $stack[] = &$trees[$i];
+                } else {
+                    // Add node to parent
+                    $i = count($stack[$l - 1]->children);
+                    $stack[$l - 1]->children[$i] = $item;
+                    $stack[] = &$stack[$l - 1]->children[$i];
+                }
+            }
         }
-
-        return $companies;
+        return $trees;
     }
 }

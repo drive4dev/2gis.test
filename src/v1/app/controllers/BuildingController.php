@@ -2,35 +2,41 @@
 
 namespace App\Controllers;
 
-use Domain\Service\BuildingService;
+use Domain\Repository\BuildingRepository;
+use Domain\Repository\CompanyRepository;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class BuildingController extends BaseController
 {
-    private function getBuildingService(): BuildingService
+    private $buildingRepository;
+    private $companyRepository;
+
+    public function __construct(BuildingRepository $buildingRepository, CompanyRepository $companyRepository)
     {
-        return $this->container->get('building_service');
+        $this->buildingRepository = $buildingRepository;
+        $this->companyRepository = $companyRepository;
     }
 
     public function companies(Request $request, Response $response, array $args)
     {
         $this->setParams($request, $response, $args);
 
-        return $this->jsonResponse(
-            'success',
-            $this->getBuildingService()->getAttachedCompanies($args['id']),
-            200);
+        $building = $this->buildingRepository->getById((int)$this->args['id']);
+
+        if (!$building) {
+            return $this->jsonResponse('error', 'Building not found', 404);
+        }
+
+        return $this->jsonResponse('success', $this->companyRepository->getByBuildingId($building->id), 200);
     }
 
     public function index(Request $request, Response $response, array $args)
     {
         $this->setParams($request, $response, $args);
 
-        return $this->jsonResponse(
-            'success',
-            $this->getBuildingService()->getList($this->args['limit'], $this->args['start']),
-            200
-        );
+        $buildings = $this->buildingRepository->getList();
+
+        return $this->jsonResponse('success', $buildings, 200);
     }
 }

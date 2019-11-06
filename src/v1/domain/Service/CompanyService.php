@@ -20,11 +20,19 @@ class CompanyService
 
     private $companyRepository;
 
+    /**
+     * CompanyService constructor.
+     * @param CompanyRepository $companyRepository
+     */
     public function __construct(CompanyRepository $companyRepository)
     {
         $this->companyRepository = $companyRepository;
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function getWithinRadius($params)
     {
         if (!$this->validateRadiusParams($params)) {
@@ -48,13 +56,16 @@ class CompanyService
         $companies = $this->companyRepository->getWithinRadius($filterParams);
 
         if (empty($companies)) {
-            throw new NotFoundException('Companies not found', 404);
+            throw new NotFoundException('Companies not found');
         }
 
         return $companies;
     }
 
-    //TODO утащить валидацию
+    /**
+     * @param $params
+     * @return bool
+     */
     private function validateRadiusParams($params)
     {
         if (!$this->isValidLatitude((float)$params['lat'])) {
@@ -72,6 +83,10 @@ class CompanyService
         return true;
     }
 
+    /**
+     * @param $lat
+     * @return bool
+     */
     private function isValidLatitude($lat)
     {
         if ($lat > 90 || $lat < -90) {
@@ -81,6 +96,10 @@ class CompanyService
         return true;
     }
 
+    /**
+     * @param $lon
+     * @return bool
+     */
     private function isValidLongitude($lon)
     {
         if ($lon > 180 || $lon < -180) {
@@ -90,6 +109,10 @@ class CompanyService
         return true;
     }
 
+    /**
+     * @param $length
+     * @return bool
+     */
     private function isValidRadius($length)
     {
         if ($length <= 0) {

@@ -28,25 +28,32 @@ abstract class BaseController
      */
     protected $args;
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    protected function setParams(Request $request, Response $response, array $args)
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     */
+    protected function setParams(Request $request, Response $response, array $args): void
     {
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
     }
 
-    protected function jsonResponse(string $status, $message, int $code):  Response
+    /**
+     * @param string $status
+     * @param $message
+     * @param int $code
+     * @return Response
+     */
+    protected function jsonResponse(string $status, $message, int $code): Response
     {
         $result = [
             'code' => $code,
             'status' => $status,
             'message' => $message,
         ];
+
         return $this->response->withJson($result, $code, JSON_PRETTY_PRINT);
     }
 }
