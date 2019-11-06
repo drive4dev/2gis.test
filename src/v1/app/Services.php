@@ -14,7 +14,7 @@ use Psr\Container\ContainerInterface;
 $container = $app->getContainer();
 
 $container['building_service'] = function (ContainerInterface $container): BuildingService {
-    return new BuildingService($container->get('building_repository'));
+    return new BuildingService($container->get('building_repository'), $container->get('company_repository'));
 };
 
 $container['category_service'] = function (ContainerInterface $container): CategoryService {

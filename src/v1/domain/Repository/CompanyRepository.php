@@ -11,6 +11,30 @@ namespace Domain\Repository;
 
 class CompanyRepository extends BaseRepository
 {
+    public function getByBuildingId(int $id): array
+    {
+        $query = 'SELECT * FROM company WHERE building_id =:id';
+        $statement = $this->getDb()->prepare($query);
+        $statement->bindParam('id', $id);
+        $statement->execute();
+
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
+    }
+
+    public function getByCategoryId(int $id): array
+    {
+        $query = "select c.id, c.name, c.phones, b.address
+                      from company_category  as cc
+	                  join company as c on cc.company_id = c.id
+	                  join building as b on c.building_id = b.id
+                  where category_id = :category_id";
+        $statement = $this->getDb()->prepare($query);
+        $statement->bindParam('category_id', $id);
+        $statement->execute();
+
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
+    }
+
     public function getWithinRadius($filterParams)
     {
         $query = 'select c.id, c.name, c.phones
@@ -23,7 +47,6 @@ class CompanyRepository extends BaseRepository
         $statement = $this->getDb()->prepare($query);
         $statement->execute($filterParams);
 
-        $companies = $statement->fetchAll(\PDO::FETCH_OBJ);
-        return $companies;
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 }

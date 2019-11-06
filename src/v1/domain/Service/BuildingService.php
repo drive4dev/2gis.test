@@ -9,17 +9,34 @@
 namespace Domain\Service;
 
 
+use Domain\Exception\NotFoundException;
 use Domain\Exception\NotValidParamsException;
+use Domain\Repository\BuildingRepository;
+use Domain\Repository\CompanyRepository;
 
-class BuildingService extends BaseService
+class BuildingService
 {
+    private $buildingRepository;
+    private $companyRepository;
+
+    public function __construct(BuildingRepository $buildingRepository, CompanyRepository $companyRepository)
+    {
+        $this->buildingRepository = $buildingRepository;
+        $this->companyRepository = $companyRepository;
+    }
 
     public function getAttachedCompanies(int $id)
     {
-        return $this->repository->getAttachedCompanies($id);
+        $companies = $this->companyRepository->getByBuildingId($id);
+
+        if (empty($companies)) {
+            throw new NotFoundException('Companies not found', 404);
+        }
+
+        return $companies;
     }
 
-    public function getList($limit = 10, $offset = 0)
+    public function getList(int $limit = 10,int $offset = 0)
     {
 
         if (!$this->isValidLimit($limit)) {
@@ -30,7 +47,12 @@ class BuildingService extends BaseService
             throw new NotValidParamsException('Offset not valid or to big');
         }
 
-        return $this->repository->getList($limit, $offset);
+        $buildings = $this->buildingRepository->getList($limit, $offset);
+        if (empty($buildings)) {
+            throw new NotFoundException('Buildings not found', 404);
+        }
+
+        return $buildings;
     }
 
     private function isValidLimit($limit)

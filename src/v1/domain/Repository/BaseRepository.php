@@ -3,7 +3,7 @@
 namespace Domain\Repository;
 
 
-abstract class BaseRepository implements RepositoryInterface
+abstract class BaseRepository
 {
     protected $db;
 

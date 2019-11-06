@@ -9,11 +9,26 @@
 namespace Domain\Service;
 
 
-class CategoryService extends BaseService
+use Domain\Exception\NotFoundException;
+use Domain\Repository\CompanyRepository;
+
+class CategoryService
 {
+    private $companyRepository;
+
+    public function __construct(CompanyRepository $companyRepository)
+    {
+        $this->companyRepository = $companyRepository;
+    }
 
     public function getAttachedCompanies(int $id)
     {
-        return $this->repository->getAttachedCompanies($id);
+        $companies = $this->companyRepository->getByCategoryId($id);
+
+        if (empty($companies)) {
+            throw new NotFoundException('Companies not found', 404);
+        }
+
+        return $companies;
     }
 }

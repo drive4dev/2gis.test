@@ -9,12 +9,21 @@
 namespace Domain\Service;
 
 
+use Domain\Exception\NotFoundException;
 use Domain\Exception\NotValidParamsException;
+use Domain\Repository\CompanyRepository;
 
-class CompanyService extends BaseService
+class CompanyService
 {
     const WGS84_ZER0_LATITUDE_LENGTH = 110.574;
     const WGS84_ZER0_LONGITUDE_LENGTH = 111.320;
+
+    private $companyRepository;
+
+    public function __construct(CompanyRepository $companyRepository)
+    {
+        $this->companyRepository = $companyRepository;
+    }
 
     public function getWithinRadius($params)
     {
@@ -36,8 +45,13 @@ class CompanyService extends BaseService
             ':maxLon' => $pointLongitude + $radiusLongitudeDiff,
         ];
 
-        return $this->repository->getWithinRadius($filterParams);
+        $companies = $this->companyRepository->getWithinRadius($filterParams);
 
+        if (empty($companies)) {
+            throw new NotFoundException('Companies not found', 404);
+        }
+
+        return $companies;
     }
 
     //TODO утащить валидацию
