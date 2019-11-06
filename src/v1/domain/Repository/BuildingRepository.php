@@ -2,7 +2,6 @@
 
 namespace Domain\Repository;
 
-use Domain\Exception\NotFoundException;
 
 class BuildingRepository extends BaseRepository
 {
