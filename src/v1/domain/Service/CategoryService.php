@@ -11,7 +11,11 @@ namespace Domain\Service;
 
 class CategoryService
 {
-    public function buildTrees(array $categories)
+    /**
+     * @param array $categories
+     * @return array
+     */
+    public function buildTrees(array $categories): array
     {
         $trees = array();
 

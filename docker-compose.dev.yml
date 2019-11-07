@@ -3,7 +3,9 @@ services:
   nginx:
     build:
       context: ./
-      dockerfile: build/prod/nginx/Dockerfile
+      dockerfile: build/dev/nginx/Dockerfile
+    volumes:
+      - ./:/var/www
     ports:
       - 80:80
     depends_on:
@@ -12,13 +14,17 @@ services:
   php-fpm:
     build:
       context: ./
-      dockerfile: build/prod/php-fpm/Dockerfile
+      dockerfile: build/dev/php-fpm/Dockerfile
+    volumes:
+      - ./:/var/www
     depends_on:
       - postgres
   php-cli:
     build:
       context: ./
-      dockerfile: build/prod/php-cli/Dockerfile
+      dockerfile: build/dev/php-cli/Dockerfile
+    volumes:
+      - ./:/var/www
     depends_on:
       - postgres
   postgres:
@@ -36,4 +42,4 @@ volumes:
   postgres:
 
 networks:
-  gis_network:
+  gis_network_dev:

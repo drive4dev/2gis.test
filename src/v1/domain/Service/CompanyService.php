@@ -33,7 +33,7 @@ class CompanyService
      * @param $params
      * @return array
      */
-    public function getWithinRadius($params)
+    public function getWithinRadius($params): array
     {
         if (!$this->validateRadiusParams($params)) {
             throw new NotValidParamsException("Raduis params not valid");
@@ -55,10 +55,6 @@ class CompanyService
 
         $companies = $this->companyRepository->getWithinRadius($filterParams);
 
-        if (empty($companies)) {
-            throw new NotFoundException('Companies not found');
-        }
-
         return $companies;
     }
 
@@ -66,7 +62,7 @@ class CompanyService
      * @param $params
      * @return bool
      */
-    private function validateRadiusParams($params)
+    private function validateRadiusParams($params): bool
     {
         if (!$this->isValidLatitude((float)$params['lat'])) {
             return false;
@@ -87,7 +83,7 @@ class CompanyService
      * @param $lat
      * @return bool
      */
-    private function isValidLatitude($lat)
+    private function isValidLatitude($lat): bool
     {
         if ($lat > 90 || $lat < -90) {
             return false;
@@ -100,7 +96,7 @@ class CompanyService
      * @param $lon
      * @return bool
      */
-    private function isValidLongitude($lon)
+    private function isValidLongitude($lon): bool
     {
         if ($lon > 180 || $lon < -180) {
             return false;
@@ -113,7 +109,7 @@ class CompanyService
      * @param $length
      * @return bool
      */
-    private function isValidRadius($length)
+    private function isValidRadius($length): bool
     {
         if ($length <= 0) {
             return false;

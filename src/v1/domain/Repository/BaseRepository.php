@@ -19,7 +19,7 @@ abstract class BaseRepository
     /**
      * @return \PDO
      */
-    protected function getDb()
+    protected function getDb() : \PDO
     {
         return $this->db;
     }

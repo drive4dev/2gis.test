@@ -23,7 +23,10 @@ class CategoryRepository extends BaseRepository
     }
 
 
-    public function getAll()
+    /**
+     * @return array
+     */
+    public function getAll(): array
     {
         $query = 'SELECT * FROM category ORDER BY lft';
         $statement = $this->getDb()->prepare($query);
@@ -36,7 +39,7 @@ class CategoryRepository extends BaseRepository
      * @param int $id
      * @return array
      */
-    public function getWithChildren(int $id)
+    public function getWithChildren(int $id): array
     {
         $parent = $this->getById($id);
 
@@ -58,7 +61,7 @@ class CategoryRepository extends BaseRepository
      * @param int $id
      * @return array
      */
-    public function getChildren(int $id)
+    public function getChildren(int $id): array
     {
         $parent = $this->getById($id);
 

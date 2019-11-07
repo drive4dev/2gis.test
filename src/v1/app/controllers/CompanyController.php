@@ -8,6 +8,7 @@
 
 namespace App\Controllers;
 
+use Domain\Exception\NotValidParamsException;
 use Domain\Repository\CompanyRepository;
 use Domain\Service\CompanyService;
 use Slim\Http\Request;
@@ -41,10 +42,13 @@ class CompanyController extends BaseController
     {
         $this->setParams($request, $response, $args);
 
-        return $this->jsonResponse(
-            'success',
-            $this->companyService->getWithinRadius($this->request->getQueryParams()),
-            200);
+        try {
+            $companies = $this->companyService->getWithinRadius($this->request->getQueryParams());
+        } catch (NotValidParamsException $exception) {
+            return $this->jsonResponse('error', $exception->getMessage(), 200);
+        }
+
+        return $this->jsonResponse('success', $companies, 200);
     }
 
 }
