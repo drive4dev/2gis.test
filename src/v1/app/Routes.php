@@ -18,6 +18,7 @@ $app->group('/api/v1', function (App $app) {
 
     $app->get('/company/{id:[0-9]+}', CompanyController::class . ':getOne');
 
-    //http://2gis.test/api/v1/category?id=7
     $app->get('/category', CategoryController::class . ':index');
+
+    $app->get('/category/{id:[0-9]+}', CategoryController::class . ':getOne');
 });

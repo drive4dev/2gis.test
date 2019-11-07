@@ -22,6 +22,16 @@ class CategoryRepository extends BaseRepository
         return $statement->fetch();
     }
 
+
+    public function getAll()
+    {
+        $query = 'SELECT * FROM category ORDER BY lft';
+        $statement = $this->getDb()->prepare($query);
+        $statement->execute();
+
+        return $statement->fetchAll(\PDO::FETCH_CLASS, Category::class);
+    }
+
     /**
      * @param int $id
      * @return array

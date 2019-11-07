@@ -28,12 +28,15 @@ class CategoryController extends BaseController
     {
         $this->setParams($request, $response, $args);
 
-        $id = 1;
-        if (!empty($this->request->getQueryParam('id'))) {
-            $id = (int)$this->request->getQueryParam('id');
-        }
+        $categories = $this->categoryRepository->getAll();
+        return $this->jsonResponse('success', $this->categoryService->buildTrees($categories), 200);
+    }
 
-        $categories = $this->categoryRepository->getWithChildren($id);
+    public function getOne(Request $request, Response $response, array $args)
+    {
+        $this->setParams($request,$response, $args);
+
+        $categories = $this->categoryRepository->getWithChildren((int)$args['id']);
 
         if (!$categories) {
             return $this->jsonResponse('error', 'Category not found', 404);
