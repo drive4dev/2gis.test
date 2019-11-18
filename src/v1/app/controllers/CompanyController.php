@@ -51,4 +51,15 @@ class CompanyController extends BaseController
         return $this->jsonResponse('success', $companies, 200);
     }
 
+    public function rectangle(Request $request, Response $response, array $args)
+    {
+        $this->setParams($request, $response, $args);
+        try {
+            $companies = $this->companyService->getByRectangle($this->request->getQueryParams());
+        } catch (NotValidParamsException $exception) {
+            return $this->jsonResponse('error', $exception->getMessage(), 200);
+        }
+
+        return $this->jsonResponse('success', $companies, 200);
+    }
 }

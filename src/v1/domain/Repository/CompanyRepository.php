@@ -69,16 +69,36 @@ class CompanyRepository extends BaseRepository
      */
     public function getWithinRadius(array $filterParams): array
     {
-        $query = 'select c.id, c.name, c.phones
+
+        $query = 'select c.* from building as b
+          join company as c on b.id = c.building_id
+          where
+          (63781 * 
+            acos(sin(:centerLatitude) * sin(radians(b.latitude)) + cos(:centerLatitude) * cos(radians(b.latitude)) * cos(:centerLongitude - radians(b.longitude)))
+          < :distance)
+        ';
+
+        $statement = $this->getDb()->prepare($query);
+        $statement->execute($filterParams);
+
+        $companies = $statement->fetchAll(\PDO::FETCH_CLASS, Company::class);
+        return $companies;
+    }
+
+    public function getByRectangle(array $filterParams): array
+    {
+        $query = 'select c.*
             from building as b 
             join company as c on b.id = c.building_id
             where
             b.latitude between :minLat and :maxLat
             and b.longitude between :minLon and :maxLon
           ';
+
         $statement = $this->getDb()->prepare($query);
         $statement->execute($filterParams);
 
         return $statement->fetchAll(\PDO::FETCH_CLASS, Company::class);
     }
+
 }

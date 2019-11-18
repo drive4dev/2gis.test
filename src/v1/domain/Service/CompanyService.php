@@ -8,8 +8,6 @@
 
 namespace Domain\Service;
 
-
-use Domain\Exception\NotFoundException;
 use Domain\Exception\NotValidParamsException;
 use Domain\Repository\CompanyRepository;
 
@@ -40,22 +38,73 @@ class CompanyService
         }
 
         $radius = (float)$params['rad'];
+        $centerLatitude = deg2rad((float)$params['lat']);
+        $centerLongitude = deg2rad((float)$params['lon']);
+
+
+        $filterParams = [
+            ':centerLatitude' => $centerLatitude,
+            ':centerLongitude' => $centerLongitude,
+            ':distance' => $radius
+        ];
+
+        return $this->companyRepository->getWithinRadius($filterParams);
+    }
+
+
+    /**
+     * @param $params
+     * @return array
+     */
+    public function getByRectangle($params)
+    {
+        if (!$this->validateRectangleParams($params)) {
+            throw new NotValidParamsException("Rectangle params not valid");
+        }
+
         $pointLatitude = (float)$params['lat'];
         $pointLongitude = (float)$params['lon'];
 
-        $radiusLatitudeDiff = round($radius / self::WGS84_ZER0_LATITUDE_LENGTH, 5);
-        $radiusLongitudeDiff = round($radius / (self::WGS84_ZER0_LONGITUDE_LENGTH * cos(deg2rad($pointLatitude))), 5);
+        $rectangleLength = (float)$params['length'];
+        $rectangleWidth = (float)$params['width'];
+
+        $latitudeDiff = round($rectangleLength / 2 / self::WGS84_ZER0_LATITUDE_LENGTH, 5);
+        $longitudeDiff = round($rectangleWidth / 2 / (self::WGS84_ZER0_LONGITUDE_LENGTH * cos(deg2rad($pointLatitude))), 5);
 
         $filterParams = [
-            ':minLat' => $pointLatitude - $radiusLatitudeDiff,
-            ':maxLat' => $pointLatitude + $radiusLatitudeDiff,
-            ':minLon' => $pointLongitude - $radiusLongitudeDiff,
-            ':maxLon' => $pointLongitude + $radiusLongitudeDiff,
+            ':minLat' => $pointLatitude - $latitudeDiff,
+            ':maxLat' => $pointLatitude + $latitudeDiff,
+            ':minLon' => $pointLongitude - $longitudeDiff,
+            ':maxLon' => $pointLongitude + $longitudeDiff,
         ];
 
-        $companies = $this->companyRepository->getWithinRadius($filterParams);
+        return $this->companyRepository->getByRectangle($filterParams);
+    }
 
-        return $companies;
+    /**
+     * @param $params
+     * @return bool
+     */
+    private function validateRectangleParams($params): bool
+    {
+        if (!$this->isValidLatitude((float)$params['lat'])) {
+            return false;
+        }
+
+        if (!$this->isValidLongitude((float)$params['lon'])) {
+            return false;
+        }
+
+
+        if (!$this->isValidLength((float)$params['length'])) {
+            return false;
+        }
+
+        if (!$this->isValidLength((float)$params['width'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -72,7 +121,7 @@ class CompanyService
             return false;
         }
 
-        if (!$this->isValidRadius((float)$params['rad'])) {
+        if (!$this->isValidLength((float)$params['rad'])) {
             return false;
         }
 
@@ -109,7 +158,7 @@ class CompanyService
      * @param $length
      * @return bool
      */
-    private function isValidRadius($length): bool
+    private function isValidLength($length): bool
     {
         if ($length <= 0) {
             return false;
