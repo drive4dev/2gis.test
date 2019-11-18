@@ -25,5 +25,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --fil
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 WORKDIR /var/www
-#RUN composer install --no-interaction --no-autoloader --no-suggest --prefer-dist --no-dev
-#RUN composer dumpautoload --no-interaction --optimize --no-dev
+RUN composer install --no-interaction --no-autoloader --no-suggest --prefer-dist
+RUN composer dumpautoload --no-interaction --optimizepf
