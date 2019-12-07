@@ -2,24 +2,22 @@
 
 use Psr\Container\ContainerInterface;
 
-$container = $app->getContainer();
+return array_merge([
+    'db' => function (ContainerInterface $container): PDO {
+        $db = $container->get('settings')['db'];
 
-$container['db'] = function (ContainerInterface $c): PDO {
-    $db = $c->get('settings')['db'];
+        $connection = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
+            $db['host'],
+            $db['port'],
+            $db['dbname'],
+            $db['user'],
+            $db['password']);
 
-    $connection = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
-        $db['host'],
-        $db['port'],
-        $db['dbname'],
-        $db['user'],
-        $db['password']);
+        $pdo = new PDO($connection);
 
-    $pdo = new PDO($connection);
-
-    return $pdo;
-};
-
-
-require __DIR__ . '/Repositories.php';
-require __DIR__ . '/Services.php';
-require __DIR__ . '/Controllers.php';
+        return $pdo;
+    }],
+    require __DIR__ . '/Repositories.php',
+    require __DIR__ . '/Services.php',
+    require __DIR__ . '/Controllers.php'
+);
